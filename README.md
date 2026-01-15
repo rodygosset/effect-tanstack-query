@@ -1,15 +1,36 @@
 # effect-react-query
 
-To install dependencies:
+Type-safe integration between [Effect](https://effect.website/) and [Tanstack React Query](https://tanstack.com/query/latest).
 
-```bash
-bun install
+Use Effect's `Effect<A, E, R>` values directly as query and mutation functions while leveraging React Query's caching, synchronization, and state management.
+
+## API
+
+```typescript
+// Create hooks from an Effect Layer
+const { RuntimeProvider, useQuery, useSuspenseQuery, useMutation } = make(myLayer)
+
+// Wrap your app
+<RuntimeProvider>
+  <App />
+</RuntimeProvider>
+
+// Use in components
+const query = useQuery({
+  queryKey: ["users"],
+  queryFn: effectThatReturnsUser,
+})
+
+const mutation = useMutation({
+  mutationFn: (variables) => effectThatMutatesData(variables),
+})
 ```
 
-To run:
+## Features
 
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.3.5. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+- **Effect-native hooks**: `useQuery`, `useSuspenseQuery`, `useMutation`
+- **Full error typing**: Errors typed as `Cause.Cause<E>` for granular handling
+- **Optional Schema support**: Encode/decode data with Effect Schema
+- **Abort signal support**: Proper cancellation handling for queries
+- **OpenTelemetry tracing**: Automatic span creation via `Effect.withSpan`
+- **Runtime lifecycle**: Automatic disposal on unmount
