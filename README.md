@@ -1,4 +1,4 @@
-# effect-react-query
+# effect-tanstack-query
 
 Type-safe integration between [Effect](https://effect.website/) and [TanStack React Query](https://tanstack.com/query/latest).
 
