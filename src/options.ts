@@ -3,6 +3,18 @@ import { mutationOptions as _mutationOptions, queryOptions as _queryOptions } fr
 import { Cause, Effect, Exit, ManagedRuntime, Schema } from "effect"
 import type { Prettify } from "./utils"
 
+/**
+ * Options for creating a query with an Effectful queryFn.
+ *
+ * @example
+ * ```ts
+ * const todosQueryOptions: QueryOptions<Todo[], never, (typeof Todo.Encoded)[], ["todos"], ApiClient> = {
+ *   queryKey: ["todos"],
+ *   queryFn: () => ApiClient.pipe(Effect.flatMap((client) => client.todos.getAll())),
+ *   schema: Schema.Array(Todo),
+ * }
+ * ```
+ */
 export interface QueryOptions<
 	TData = unknown,
 	TError = never,
@@ -24,6 +36,19 @@ const makeQueryOptions =
 	) =>
 		options
 
+/**
+ * Options for creating a mutation with an Effectful mutationFn.
+ *
+ * @example
+ * ```ts
+ * const createTodoMutation: MutationOptions<Todo, HttpError, { title: string }, unknown, ApiClient> = {
+ *   mutationKey: ["createTodo"],
+ *   mutationFn: (variables) => ApiClient.pipe(
+ *     Effect.flatMap((client) => client.todos.create(variables))
+ *   ),
+ * }
+ * ```
+ */
 export interface MutationOptions<
 	TData = unknown,
 	TError = never,
@@ -43,6 +68,19 @@ const makeMutationOptions =
 	) =>
 		options
 
+/**
+ * Creates typed helpers for building query and mutation options with requirements.
+ *
+ * @example
+ * ```ts
+ * const options = makeOptions<ApiClient>()
+ * const todosQueryOptions = options.queryOptions({
+ *   queryKey: ["todos"],
+ *   queryFn: () => ApiClient.pipe(Effect.flatMap((client) => client.todos.getAll())),
+ *   schema: Schema.Array(Todo),
+ * })
+ * ```
+ */
 export const makeOptions = <R>() => ({
 	queryOptions: makeQueryOptions<R>(),
 	mutationOptions: makeMutationOptions<R>(),
@@ -53,6 +91,18 @@ const runAbortablePromiseExit =
 	(effect: Effect.Effect<A, E, R>) =>
 		runtime.runPromiseExit(effect, { signal })
 
+/**
+ * Converts Effectful QueryOptions to regular QueryOptions for use with a queryClient.
+ *
+ * @example
+ * ```ts
+ * async loader({ context }) {
+ *   await context.queryClient.prefetchQuery(
+ *     eq.toQueryOptions(todosQueryOptions, runtime)
+ *   )
+ * }
+ * ```
+ */
 export function toQueryOptions<
 	TData = unknown,
 	TError = never,
@@ -91,6 +141,14 @@ export function toQueryOptions<
 	}) as UseQueryOptions<TQueryFnData, Cause.Cause<TError>, TData, TQueryKey>
 }
 
+/**
+ * Converts Effectful MutationOptions to regular MutationOptions for use with regular TanStack Query APIs.
+ *
+ * @example
+ * ```ts
+ * const mutationOptions = eq.toMutationOptions(createTodoMutation, runtime)
+ * ```
+ */
 export function toMutationOptions<
 	TData = unknown,
 	TError = never,

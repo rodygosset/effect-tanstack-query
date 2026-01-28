@@ -17,6 +17,32 @@ import { toMutationOptions, toQueryOptions } from "./options"
 
 const memoMap = Effect.runSync(Layer.makeMemoMap)
 
+/**
+ * Creates a runtime provider and React hooks for Effect-based queries and mutations.
+ *
+ * @example
+ * ```ts
+ * const eq = make(ApiClient.Default)
+ *
+ * // Use RuntimeProvider in your app root
+ * <eq.RuntimeProvider>{children}</eq.RuntimeProvider>
+ *
+ * // Use hooks in components
+ * const todos = eq.useSuspenseQuery(todosQueryOptions).pipe(
+ *   Either.map(({ data }) => data),
+ *   Either.getOrElse(() => [] as Todo[])
+ * )
+ * ```
+ *
+ * @returns An object containing:
+ * - `RuntimeProvider`: React component that provides the Effect runtime
+ * - `useQuery`: Hook for standard queries
+ * - `useSuspenseQuery`: Hook for suspense queries
+ * - `useMutation`: Hook for mutations
+ * - `toQueryOptions`: Helper to convert options for use outside of eq.useQuery or eq.useSuspenseQuery
+ * - `toMutationOptions`: Helper to convert mutation options
+ * - `useRuntime`: Hook to access the runtime directly
+ */
 export function make<R, E = never>(layer: Layer.Layer<R, E>) {
 	const RuntimeContext = React.createContext<ManagedRuntime.ManagedRuntime<R, E> | null>(null)
 

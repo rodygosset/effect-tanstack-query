@@ -1,17 +1,35 @@
 {
-  "name": "effect-react-query",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5",
-    "effect": "^3.19.14",
-    "@effect/platform": "^0.94.2",
-    "react": "^19.2.3",
-    "@tanstack/react-query": "^5.90.17",
-    "@types/react": "^19.2.8"
-  }
+	"name": "@rody.gosset/effect-react-query",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"private": false,
+	"devDependencies": {
+		"@types/bun": "latest",
+		"tsup": "^8.5.1"
+	},
+	"peerDependencies": {
+		"typescript": "^5",
+		"effect": "^3.19.14",
+		"@effect/platform": "^0.94.2",
+		"react": "^19.2.3",
+		"@tanstack/react-query": "^5.90.17",
+		"@types/react": "^19.2.8"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup",
+		"prepublishOnly": "bun run build"
+	}
 }
