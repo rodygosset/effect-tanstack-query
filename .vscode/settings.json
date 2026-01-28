@@ -19,5 +19,4 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "editor.detectIndentation": false,
-    "tailwindCSS.experimental.configFile": "front/packages/ui/src/styles/globals.css"
 }
